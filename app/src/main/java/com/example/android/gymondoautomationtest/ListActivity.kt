@@ -1,6 +1,7 @@
 package com.example.android.gymondoautomationtest
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -22,9 +24,10 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class ListActivity : AppCompatActivity() {
+class ListActivity : AppCompatActivity(), ListItemClickListener {
 
     private val listOfExercises: ArrayList<String> = ArrayList()
+    private val adapter: MyAdapter = MyAdapter(listOfExercises, this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,11 +38,17 @@ class ListActivity : AppCompatActivity() {
         setupListeners()
     }
 
+    override fun onListItemClicked(item: String) {
+        val intent = Intent(this,ImageActivity::class.java)
+        intent.putExtra("Item name", item)
+        startActivity(intent)
+    }
+
     private fun setupRecyclerView() {
         val dividerItemDecoration =
             DividerItemDecoration(recycler_view.context, LinearLayoutManager.VERTICAL)
         recycler_view.layoutManager = LinearLayoutManager(this)
-        recycler_view.adapter = MyAdapter(listOfExercises)
+        recycler_view.adapter = adapter
         recycler_view.addItemDecoration(dividerItemDecoration)
     }
 
@@ -52,9 +61,9 @@ class ListActivity : AppCompatActivity() {
 
             override fun onResponse(call: Call<Exercise>, response: Response<Exercise>) {
                 if (response.isSuccessful) {
-                    response.body()?.results?.filter { !it.name.isNullOrEmpty() }?.forEach {
-                        listOfExercises.add("${it.id} - ${it.name}")
-                    }
+                    response.body()?.results
+                        ?.filter { !it.name.isNullOrEmpty() }
+                        ?.forEach { listOfExercises.add("${it.id} - ${it.name}") }
                     recycler_view.adapter?.notifyDataSetChanged()
                 } else {
                     Toast.makeText(this@ListActivity, "Response not successful", Toast.LENGTH_LONG)
@@ -74,9 +83,9 @@ class ListActivity : AppCompatActivity() {
 
     private fun setupListeners() {
         btnSearch.setOnClickListener {
-            (recycler_view.adapter as MyAdapter).setNewDataSet(listOfExercises.filter {
-                it.toLowerCase(Locale.getDefault()).contains(
-                    editTxtSearch.text.toString().toLowerCase(Locale.getDefault())
+            adapter.setNewDataSet(listOfExercises.filter {
+                it.toLowerCase().contains(
+                    editTxtSearch.text.toString().toLowerCase()
                 )
             })
             clearFocusAndCloseKeyboard()
@@ -98,7 +107,7 @@ class ListActivity : AppCompatActivity() {
         editTxtSearch.clearFocus()
     }
 
-    class MyAdapter(var dataSet: List<String>) :
+    class MyAdapter(private var dataSet: List<String>, private val listener: ListItemClickListener) :
         RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
 
         class MyViewHolder(val textView: TextView) : RecyclerView.ViewHolder(textView)
@@ -116,6 +125,9 @@ class ListActivity : AppCompatActivity() {
 
         override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
             holder.textView.text = dataSet[position]
+            holder.textView.setOnClickListener {
+                listener.onListItemClicked(dataSet[position])
+            }
         }
 
         override fun getItemCount() = dataSet.size
@@ -125,5 +137,7 @@ class ListActivity : AppCompatActivity() {
             notifyDataSetChanged()
         }
     }
+
+
 }
 
