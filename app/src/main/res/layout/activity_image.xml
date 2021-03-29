@@ -9,6 +9,7 @@
     tools:context=".ImageActivity">
 
     <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/appCompatImageView"
         android:layout_width="414dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -17,15 +18,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"
-        app:srcCompat="@drawable/ic_launcher_foreground" />
+        app:srcCompat="@drawable/iphone_x_en_01" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/item_text"
+        style="@style/TextAppearance.AppCompat.Headline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/TextAppearance.AppCompat.Headline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="65dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
