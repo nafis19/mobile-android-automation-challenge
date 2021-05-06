@@ -1,0 +1,24 @@
+##Why did you choose the framework you used? 
+I have used Espresso framework in this project. I am familiar with Espresso and found it more effecient to implement the automation task with Espresso.
+
+
+##What were the advantages and disadvantages of your choice?
+Advantages:
+1.Easy installation
+2.It works fine with JUnit and hamcrest matchers framework
+3.Test execution is fast
+4.Can execute tests one by one or in a group
+
+Disadvantages:
+1.It only supports android app automation.
+
+
+##Which good coding practices did you follow when writing your tests?
+I wanted to implement Page Object Model design pattern but could not complete it.
+
+
+##How do you make sure your code is maintainable by other team members? 
+The code is maintainable by other team members by:
+1.Implementing better variable names
+2.Creating feature based tests
+3.Adding description of test steps
